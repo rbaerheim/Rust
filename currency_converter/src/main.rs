@@ -1,13 +1,12 @@
 use std::{io, process};
 
-#[allow(unused)]
 #[derive(Debug)]
 struct Currency {
     name: String,
     code: String,
     value_in_nok: f32,
 }
-#[allow(unused)]
+
 fn main() {
     let curr1: Currency = Currency {
         name: String::from("American Dollar"),
@@ -47,20 +46,24 @@ fn main() {
             process::exit(1);
         });
 
-    let input_to_float: f32 = match currency_value_input.parse() {
-        Ok()
-    }
+    let input_to_float: f32 = currency_value_input.trim().parse().unwrap();
 
-    convert(currency_code_input.trim().to_string(), currency_value_input, &currency_vector);
+    let converted_value = convert(
+        currency_code_input.trim().to_string(),
+        input_to_float,
+        &currency_vector,
+    );
+
+    println!("Converted value: {}", converted_value);
 }
 
-fn convert(in_code: String, in_value: f32, currencies_available: &[Currency]) -> bool {
+fn convert(in_code: String, in_value: f32, currencies_available: &[Currency]) -> f32 {
     let currencies_iter = currencies_available.iter();
     for currency in currencies_iter {
         if in_code == currency.code {
-            return currency.value_in_nok * currency.
-        }
+            return currency.value_in_nok * in_value;
+        };
     }
 
-    true
+    0.0
 }
