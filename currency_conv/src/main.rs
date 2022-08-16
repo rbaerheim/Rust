@@ -7,6 +7,12 @@ struct Currency<'a> {
     value_in_nok: f32,
 }
 
+impl Currency<'_> {
+    fn get_code<'a>(&'a self) -> &'a str {
+        return self.code;
+    }
+}
+
 const USD: Currency = Currency {
     name: "American Dollar",
     code: "USD",
@@ -28,20 +34,35 @@ const EUR: Currency = Currency {
 fn main() {
     let currency_vector = vec![NOK, USD, EUR];
     let mut currency_value_input: String = String::new();
-    let mut currency_code_input: String = String::new();
 
     println!(
         "This is a currency converter which converts EUR or USD to NOK, input which currency you want(Currently only supports USD and EUR): "
     );
 
-    io::stdin()
-        .read_line(&mut currency_code_input)
-        .unwrap_or_else(|e| {
-            println!("Error: {}", e);
+    let code_exists = loop {
+        let mut currency_code_input: String = String::new();
+        io::stdin()
+            .read_line(&mut currency_code_input)
+            .unwrap_or_else(|e| {
+                println!("Error: {}", e);
+                process::exit(1);
+            });
+        let check = check_if_convertable(currency_code_input, &currency_vector);
+        if check.0 {
+            break check.1;
+        } else if check.1.trim().to_lowercase() == "Q".to_lowercase() {
             process::exit(1);
-        });
+        }
+        println!(
+            "'{}' did not match any of our currency codes, try again or enter Q to exit.",
+            check.1.trim()
+        )
+    };
 
-    println!("Input amount to get converted:");
+    println!(
+        "Currency code exists: {}, input amount to get converted:",
+        code_exists.trim()
+    );
 
     io::stdin()
         .read_line(&mut currency_value_input)
@@ -50,11 +71,9 @@ fn main() {
             process::exit(1);
         });
 
-    let input_to_float: f32 = currency_value_input.trim().parse().unwrap();
-
     let converted_value = convert(
-        currency_code_input.trim().to_string().to_uppercase(),
-        input_to_float,
+        code_exists.trim().to_string().to_uppercase(),
+        &currency_value_input,
         &currency_vector,
     );
 
@@ -62,18 +81,32 @@ fn main() {
         println!("{}", converted_value.1)
     } else {
         println!(
-            "{} {} is currently {} NOK",
-            input_to_float, converted_value.1, converted_value.0
+            "{} {}(s) is currently {} NOK",
+            currency_value_input, converted_value.1, converted_value.0
         );
     }
 }
 
-fn convert(in_code: String, in_value: f32, currencies_available: &[Currency]) -> (f32, String) {
+fn check_if_convertable<'a>(
+    currency_code: String,
+    currencies_available: &'a [Currency],
+) -> (bool, String) {
+    let currencies_available_iter = currencies_available.iter();
+    for currency in currencies_available_iter {
+        if currency.get_code() == currency_code.trim() {
+            return (true, currency_code.to_string());
+        }
+    }
+    (false, currency_code.to_string())
+}
+
+fn convert(in_code: String, in_value: &String, currencies_available: &[Currency]) -> (f32, String) {
+    let input_value_float: f32 = in_value.trim().parse().unwrap();
     let currencies_iter = currencies_available.iter();
     for currency in currencies_iter {
         if in_code == currency.code {
             return (
-                (currency.value_in_nok * in_value),
+                (currency.value_in_nok * input_value_float),
                 currency.name.to_string(),
             );
         };
