@@ -39,25 +39,7 @@ fn main() {
         "This is a currency converter which converts EUR or USD to NOK, input which currency you want(Currently only supports USD and EUR): "
     );
 
-    let code_exists = loop {
-        let mut currency_code_input: String = String::new();
-        io::stdin()
-            .read_line(&mut currency_code_input)
-            .unwrap_or_else(|e| {
-                println!("Error: {}", e);
-                process::exit(1);
-            });
-        let check = check_if_convertable(currency_code_input, &currency_vector);
-        if check.0 {
-            break check.1;
-        } else if check.1.trim().to_lowercase() == "Q".to_lowercase() {
-            process::exit(1);
-        }
-        println!(
-            "'{}' did not match any of our currency codes, try again or enter Q to exit.",
-            check.1.trim()
-        )
-    };
+    let code_exists = check_code_exists(&currency_vector);
 
     println!(
         "Currency code exists: {}, input amount to get converted:",
@@ -81,8 +63,34 @@ fn main() {
         println!("{}", converted_value.1)
     } else {
         println!(
-            "{} {}(s) is currently {} NOK",
-            currency_value_input, converted_value.1, converted_value.0
+            "{} {}(s) is currently {} NOK.",
+            currency_value_input.trim(),
+            converted_value.1,
+            converted_value.0
+        );
+    }
+}
+
+fn check_code_exists(currencies_available: &[Currency]) -> String {
+    loop {
+        let mut currency_code_input: String = String::new();
+        io::stdin()
+            .read_line(&mut currency_code_input)
+            .unwrap_or_else(|e| {
+                println!("Error: {}", e);
+                process::exit(1);
+            });
+        let check = check_if_convertable(currency_code_input, &currencies_available);
+        if check.0 {
+            return check.1;
+        }
+        if check.1.trim().to_lowercase() == "Q".to_lowercase() {
+            println!("Exiting...");
+            process::exit(1);
+        }
+        println!(
+            "'{}' did not match any of our currency codes, try again or enter Q to exit.",
+            check.1.trim()
         );
     }
 }
