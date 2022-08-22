@@ -16,6 +16,10 @@ impl Currency<'_> {
     fn get_exchange_rate<'a>(&'a self) -> &'a f32 {
         return &self.exchange_rate;
     }
+
+    fn get_currency_name<'a>(&'a self) -> &'a str {
+        return &self.name;
+    }
 }
 
 const USD: Currency = Currency {
@@ -60,17 +64,13 @@ fn main() {
 
     println!(
         "You have chosen to convert from {} to {}, please input the value to be converted:",
-        conversion_vector[0].0.trim(),
-        conversion_vector[1].0.trim()
+        conversion_vector[0].0, conversion_vector[1].0
     );
 
     let converted_value = convert(conversion_vector[0].1, conversion_vector[1].1);
     println!(
         "{} {} is {} {}",
-        converted_value.0,
-        conversion_vector[0].0.trim(),
-        converted_value.1,
-        conversion_vector[1].0.trim()
+        converted_value.0, conversion_vector[0].2, converted_value.1, conversion_vector[1].2
     );
 }
 
@@ -105,7 +105,7 @@ fn get_input_value() -> Result<f32, ParseFloatError> {
     Ok(value)
 }
 
-fn check_code_exists(currencies_available: &[Currency]) -> Vec<(String, f32)> {
+fn check_code_exists(currencies_available: &[Currency]) -> Vec<(String, f32, String)> {
     let mut conversion_vector = Vec::new();
     loop {
         let mut currency_code_input: String = String::new();
@@ -121,7 +121,7 @@ fn check_code_exists(currencies_available: &[Currency]) -> Vec<(String, f32)> {
             process::exit(1);
         }
         if check.0 && conversion_vector.len() < 1 {
-            conversion_vector.push((check.1, check.2));
+            conversion_vector.push((check.1, check.2, check.3));
             println!(
                 "You choose to convert from {}, what do you want it converted to?",
                 conversion_vector[0].0.trim()
@@ -129,7 +129,7 @@ fn check_code_exists(currencies_available: &[Currency]) -> Vec<(String, f32)> {
         } else if check.0 {
             match check.1 {
                 _ if check.1 == conversion_vector[0].0 => println!("You tried to convert {} to {}, these are the same, please enter another currency to convert to.", conversion_vector[0].0.trim(), check.1.trim()),
-                _ => conversion_vector.push((check.1, check.2)),
+                _ => conversion_vector.push((check.1, check.2, check.3)),
             }
             if conversion_vector.len() == 2 {
                 return conversion_vector;
@@ -146,16 +146,22 @@ fn check_code_exists(currencies_available: &[Currency]) -> Vec<(String, f32)> {
 fn check_if_convertable<'a>(
     currency_code: String,
     currencies_available: &'a [Currency],
-) -> (bool, String, f32) {
+) -> (bool, String, f32, String) {
     let currencies_available_iter = currencies_available.iter();
     for currency in currencies_available_iter {
         if currency.get_code() == currency_code.trim() {
             return (
                 true,
-                currency_code.to_string(),
+                currency_code.trim().to_string(),
                 *currency.get_exchange_rate(),
+                currency.get_currency_name().to_string(),
             );
         }
     }
-    (false, currency_code.to_string(), 0.0)
+    (
+        false,
+        currency_code.to_string(),
+        0.0,
+        "No such name".to_string(),
+    )
 }
