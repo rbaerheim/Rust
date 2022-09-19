@@ -7,26 +7,22 @@ fn main() {
     println!("{}", is_happy);
 }
 
-fn check_string_parse_to_signed_int(user_input: &String) -> Result<u128, ParseIntError> {
+fn check_string_can_be_parsed_to_u128(user_input: &String) -> Result<u128, ParseIntError> {
     match user_input.trim().parse::<u128>() {
         Ok(num) => Ok(num),
         Err(e) => Err(e),
     }
 }
 
-fn integers_to_digits(digit: u128) -> Vec<u128> {
+fn integers_split_to_individual_digits(digit: u128) -> Vec<u128> {
     let mut digit_copy: u128 = digit;
     let mut digit_hashmap: Vec<u128> = Vec::with_capacity(10);
     while digit_copy > 0 {
-        let num_to_vec: u128 = integer_squared(digit_copy % 10);
+        let num_to_vec: u128 = (digit_copy % 10).pow(2);
         digit_copy = digit_copy / 10;
         digit_hashmap.push(num_to_vec);
     }
     digit_hashmap
-}
-
-fn integer_squared(number: u128) -> u128 {
-    number.pow(2)
 }
 
 fn get_user_input() -> String {
@@ -47,7 +43,7 @@ fn happy_number() -> String {
         let user_input = get_user_input();
 
         let num = loop_unwrap::unwrap_continue!(
-            check_string_parse_to_signed_int(&user_input),
+            check_string_can_be_parsed_to_u128(&user_input),
             "Not a valid input, try again: "
         );
         break (num, user_input);
@@ -56,7 +52,7 @@ fn happy_number() -> String {
     let mut control_hashmap = HashMap::new();
 
     loop {
-        num = integers_to_digits(num).iter().sum();
+        num = integers_split_to_individual_digits(num).iter().sum();
         if num == 1 {
             return format!("{} is a happy number!", user_input.trim());
         }
