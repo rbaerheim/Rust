@@ -29,21 +29,28 @@ fn integer_squared(number: u128) -> u128 {
     number.pow(2)
 }
 
-fn happy_number() -> String {
-    println!(
-        "Input a positive integer from 0 to 255 and I will tell you if it is a 'happy number': "
-    );
+fn get_user_input() -> String {
     let mut user_input = String::new();
-    let mut num = loop {
+    user_input = loop {
         io::stdin().read_line(&mut user_input).unwrap_or_else(|e| {
             println!("There was an error: {}", e);
             process::exit(1)
         });
+        break user_input;
+    };
+    user_input
+}
+
+fn happy_number() -> String {
+    let (mut num, user_input) = loop {
+        println!("Input a positive integer and I will tell you if it is a 'happy number': ");
+        let user_input = get_user_input();
+
         let num = loop_unwrap::unwrap_continue!(
             check_string_parse_to_signed_int(&user_input),
             "Not a valid input, try again: "
         );
-        break num;
+        break (num, user_input);
     };
 
     let mut control_hashmap = HashMap::new();
