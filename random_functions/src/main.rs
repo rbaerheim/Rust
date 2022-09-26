@@ -7,18 +7,18 @@ fn main() {
     println!("{}", is_happy);
 }
 
-fn check_string_can_be_parsed_to_u128(user_input: &String) -> Result<u128, ParseIntError> {
-    match user_input.trim().parse::<u128>() {
+fn check_string_can_be_parsed_to_u32(user_input: &String) -> Result<u32, ParseIntError> {
+    match user_input.trim().parse::<u32>() {
         Ok(num) => Ok(num),
         Err(e) => Err(e),
     }
 }
 
-fn integers_split_to_individual_digits(digit: u128) -> Vec<u128> {
-    let mut digit_copy: u128 = digit;
-    let mut digit_hashmap: Vec<u128> = Vec::with_capacity(10);
+fn integers_split_to_individual_digits(digit: u32) -> Vec<u32> {
+    let mut digit_copy: u32 = digit;
+    let mut digit_hashmap: Vec<u32> = Vec::with_capacity(10);
     while digit_copy > 0 {
-        let num_to_vec: u128 = (digit_copy % 10).pow(2);
+        let num_to_vec: u32 = (digit_copy % 10).pow(2);
         digit_copy = digit_copy / 10;
         digit_hashmap.push(num_to_vec);
     }
@@ -37,13 +37,33 @@ fn get_user_input() -> String {
     user_input
 }
 
-fn happy_number() -> String {
+fn prime_factorization() -> String {
     let (mut num, user_input) = loop {
-        println!("Input a positive integer and I will tell you if it is a 'happy number': ");
+        println!("Input a number between 0 and 4294967295 and I will perform a prime factorization of that number: ");
         let user_input = get_user_input();
 
         let num = loop_unwrap::unwrap_continue!(
-            check_string_can_be_parsed_to_u128(&user_input),
+            check_string_can_be_parsed_to_u32(&user_input),
+            "Not a valid input, try again: "
+        );
+        break (num, user_input);
+    };
+    let mut divisor: u32 = 2;
+    loop {
+        if num % divisor == 0 {
+            break;
+        }
+    }
+    user_input
+}
+
+fn happy_number() -> String {
+    let (mut num, user_input) = loop {
+        println!("Input a number between 0 and 4294967295 and I will tell you if it is a 'happy number': ");
+        let user_input = get_user_input();
+
+        let num = loop_unwrap::unwrap_continue!(
+            check_string_can_be_parsed_to_u32(&user_input),
             "Not a valid input, try again: "
         );
         break (num, user_input);
