@@ -5,6 +5,10 @@ use serde::{Serialize, Deserialize};
 fn main() {
     let is_happy = happy_number();
 
+    let prime = prime_factorization();
+
+    println!("{}", prime);
+
     println!("{}", is_happy);
 }
 
@@ -55,7 +59,7 @@ fn prime_factorization() -> String {
     }
     loop {
         if num % 2 == 0 {
-            
+            break
         }
     }
     user_input
