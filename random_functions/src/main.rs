@@ -1,5 +1,6 @@
 use loop_unwrap::ToOption;
-use std::{collections::HashMap, io, num::ParseIntError, process};
+use std::{collections::HashMap, io, num::ParseIntError, process, fs::OpenOptions};
+use serde::{Serialize, Deserialize};
 
 fn main() {
     let is_happy = happy_number();
@@ -48,10 +49,13 @@ fn prime_factorization() -> String {
         );
         break (num, user_input);
     };
-    let mut divisor: u32 = 2;
+    let prime_hashmap = OpenOptions::new().write(true).create_new(true).open("prime_hashmap.txt");
+    if num < 2 {
+        return user_input
+    }
     loop {
-        if num % divisor == 0 {
-            break;
+        if num % 2 == 0 {
+            
         }
     }
     user_input

@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 loop_unwrap = "0.2.0"
+serde = "1.0.145"
