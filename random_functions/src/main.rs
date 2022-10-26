@@ -1,6 +1,6 @@
 use loop_unwrap::ToOption;
-use std::{collections::HashMap, io, num::ParseIntError, process, fs::OpenOptions};
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
+use std::{collections::HashMap, fs::OpenOptions, io, num::ParseIntError, process};
 
 fn main() {
     let is_happy = happy_number();
@@ -44,7 +44,7 @@ fn get_user_input() -> String {
 
 fn prime_factorization() -> String {
     let (mut num, user_input) = loop {
-        println!("Input a number between 0 and 4294967295 and I will perform a prime factorization of that number: ");
+        println!("Input a number between 0 and {} and I will perform a prime factorization of that number: ", u32::MAX);
         let user_input = get_user_input();
 
         let num = loop_unwrap::unwrap_continue!(
@@ -53,13 +53,16 @@ fn prime_factorization() -> String {
         );
         break (num, user_input);
     };
-    let prime_hashmap = OpenOptions::new().write(true).create_new(true).open("prime_hashmap.txt");
+    let prime_hashmap = OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open("prime_hashmap.txt");
     if num < 2 {
-        return user_input
+        return user_input;
     }
     loop {
         if num % 2 == 0 {
-            break
+            break;
         }
     }
     user_input
