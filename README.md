@@ -1,7 +1,11 @@
 # Rust
-My journey of learning the Rust programming language:
+According to the [Stack Overflow survey](https://insights.stackoverflow.com/survey/2021) conducted among over 80,000 developers, Rust is the most beloved programming language. And it won the title for the sixth year running.
 
-List from http://www.cplusplus.com/forum/beginner/3473/
+Rust is very fun to code in, and as a bonus it is designed for performance and safety. It excels particulary in safe concurrency and memory management.
+
+I really like to make fast, reliable and secure software and that is why I like Rust.
+
+This is a list from http://www.cplusplus.com/forum/beginner/3473/ which is a bunch of coding exercises/projects to basically learn any programming language which I use to learn Rust.
 
 ## Beginner
 
